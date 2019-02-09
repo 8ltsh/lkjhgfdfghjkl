@@ -82,3 +82,12 @@ client.on('message', message =>{
         message.channel.send(`**\`\`\`xl\n${res}\`\`\`**`);
     }
 });//Toxic Codes
+
+@client.event
+async def on_ready():
+    await client.change_presence(game=discord.Game(name="By HeyImTamer_YT", url="https://twitch.tv/1", type=8ltsh da best))
+    print ("-----------------------")
+    print ("Ready Hi !! xD")
+    print ("I am Online " + client.user.name)
+    print ("Bot ID: " + client.user.id)
+    print ("-----------------------")
