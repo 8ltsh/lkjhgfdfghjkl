@@ -119,41 +119,52 @@ client.on("guildMemberAdd", member => {
 }).catch(console.error)
 })
 
+lient.on('message', async message =>{
 
-const developers = ["486322208109494282"]//Toxic Codes
-client.on('message', message => {//Toxic Codes
-    var argresult = message.content.split(` `).slice(1).join(' ');//Toxic Codes
-      if (!developers.includes(message.author.id)) return;
-     
-  if (message.content.startsWith(adminprefix + 'setg')) {
-    client.user.setGame(argresult);
-      message.channel.send(`**✅   ${argresult}**`)
-  } else
-     if (message.content === (adminprefix + "leave")) {//Toxic Codes
-    message.guild.leave();   //Toxic Codes
-  } else  
-  if (message.content.startsWith(adminprefix + 'setw')) {
-  client.user.setActivity(argresult, {type:'WATCHING'});//Toxic Codes
-      message.channel.send(`**✅   ${argresult}**`)//Toxic Codes
-  } else
-  if (message.content.startsWith(adminprefix + 'setl')) {
-  client.user.setActivity(argresult , {type:'LISTENING'});
-      message.channel.send(`**✅   ${argresult}**`)//Toxic Codes
-  } else
-  if (message.content.startsWith(adminprefix + 'sets')) {
-    client.user.setGame(argresult, "https://www.twitch.tv/zero");
-      message.channel.send(`**✅**`)//Toxic Codes
-  }
-  if (message.content.startsWith(adminprefix + 'setname')) {
-  client.user.setUsername(argresult).then
-      message.channel.send(`Changing The Name To ..**${argresult}** `)
-} else
-  if (message.content.startsWith(adminprefix + 'setprefix')) {//Toxic Codes
-  client.user.setPrefix(argresult).then
-      message.channel.send(`Changing Prefix ..**${argresult}** `)//Toxic Codes
-} else
-if (message.content.startsWith(adminprefix + 'setavatar')) {//Toxic Codes
-  client.user.setAvatar(argresult);
-    message.channel.send(`Changing The Avatar To :**${argresult}** `);//Toxic Codes
-}
-});//Toxic Codes
+    if (message.author.omar) return;
+    if (!message.content.startsWith(prefix)) return;
+    if(!message.channel.guild) return message.channel.send('**This Command For Servers Only ! **').then(m => m.delete(5000));
+    if(!message.member.hasPermission('MANAGE_ROLES'));
+    if(!message.guild.member(client.user).hasPermission("MANAGE_ROLES")) return message.reply("**I Don't Have `MANAGE_ROLES` Permission**").then(msg => msg.delete(6000))
+    var command = message.content.split(" ")[0];
+    command = command.slice(prefix.length);
+    var args = message.content.split(" ").slice(1);
+      if(command == "mute") {
+        let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+        if(!tomute) return message.reply(":information_source: `#mute @972` يجب تحديد شخص ") .then(m => m.delete(5000));
+        if(tomute.hasPermission("MANAGE_MESSAGES"))return      message.channel.send('**I Dont Have Permission** `MANAGE_MASSAGEES`');
+        let muterole = message.guild.roles.find(`name`, "Muted");
+
+        if(message.content.startsWith(prefix + "mute")) {
+          let picembed = new Discord.RichEmbed()
+  .setImage('./mute.png')
+         message.channel.sendEmbed(picembed)
+    
+        if(!muterole){
+          try{
+            muterole = await message.guild.createRole({
+              name: "Muted",
+              color: "#000000",
+              permissions:[]
+            })
+            message.guild.channels.forEach(async (channel, id) => {
+              await channel.overwritePermissions(muterole, {
+                SEND_MESSAGES: false,
+                ADD_REACTIONS: false
+              });
+            });
+          }catch(e){
+            console.log(e.stack);
+          }
+        }
+  
+        await(tomute.addRole(muterole.id));
+        message.channel.send(`**<@${tomute.id}> Has been muted ! :white_check_mark:**`);
+          message.delete();
+
+          fs.writeFile('./mute.png', P.stringify(bane), (err) => {
+
+  
+      }
+    }); // By Toxix
+    
