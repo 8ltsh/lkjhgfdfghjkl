@@ -109,3 +109,21 @@ client.on("message", async msg =>{
             unbanChannel.send(banembed)
 };
 });
+
+
+client.on('message' , async (message) => { ///@» MHSTR 🇮🇶#1119
+ if (message.content.startsWith(prefix + 'هل')) { ////@» MHSTR 🇮🇶#1119
+///@» MHSTR 🇮🇶#1119
+let color = '0xffffff' ///@» MHSTR 🇮🇶#1119
+//@» MHSTR 🇮🇶#1119
+      const { body } = await superagent ///@» MHSTR 🇮🇶#1119
+    .get('https://yesno.wtf/api/'); ///@» MHSTR 🇮🇶#1119
+    if(body.answer === 'yes') color = '0x01DF01'; ////@» MHSTR 🇮🇶#1119
+    if(body.answer === 'no') color = '0xFF0000'; //////@» MHSTR 🇮🇶#1119
+    const embed = new Discord.RichEmbed()
+    .setColor(color) //////@» MHSTR 🇮🇶#1119
+    .setImage(`${body.image}`)////@» MHSTR 🇮🇶#1119
+    message.channel.send(`**The magic API says:** **${body.answer}**`, {embed});
+///@» MHSTR 🇮🇶#1119
+}  /// @» MHSTR 🇮🇶#1119
+}); //@» MHSTR 🇮🇶#1119
