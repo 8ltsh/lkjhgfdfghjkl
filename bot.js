@@ -119,39 +119,63 @@ client.on("guildMemberAdd", member => {
 }).catch(console.error)
 })
 
-client.on('message', message => {//Toxic Codes
-if(message.content.startsWith(prefix + 'mute')){//Toxic Codes
-    let role = message.guild.roles.find(r => r.name === 'Muted');//Toxic Codes
-    if(!role) message.guild.createRole({name: 'Muted'});//Toxic Codes
-     if(user.bot){//Toxic Codes
-        return message.channel.send(`I can't mute ${user} because he is a bot`);//Toxic Codes
+
+client.on('message', message => {
+    let prefix = '#';
+if(message.content.startsWith(prefix + "tempmute")){
+    let muteduser = message.mentions.members.first();
+    let jif = message.content.split(' ').slice(1);
+    let durration = jif[1];
+    let reason = message.content.split(' ').slice(3).join(' ');
+    let hh;
+    let muted = message.guild.roles.find(r => r.name === 'Muted');
+    if(!muteduser){
+        return message.channel.send('**#- I cannot find this guy**');
     }
-    if(user.hasPermission('ADMINISTRATOR')) {//Toxic Codes
-        return message.channel.send(`I can't mute ${user} because he is staff`);//Toxic Codes
-    }//Toxic Codes
-   
-    if(!user){//Toxic Codes
-        message.channel.send(`There's no person to mute tho`);
+    if(!message.guild.me.hasPermission('ADMINISTRATOR')){
+        return message.channel.send(`**#- I must have the \`ADMINISTRATOR\` Perms so i can mute people**`);
     }
-    message.guild.channels.forEach(f => {//Toxic Codes
-        f.overwritePermissions(role, {//Toxic Codes
+    if(muteduser.hasPermission('ADMINISTRATOR')) {
+        return message.channel.send(`**#- He has a \`ADMINISTRATOR\` Perms and u cannot mute him**`);
+    }
+    if(!message.member.hasPermission('ADMINISTRATOR')){
+        return message.channel.send('**#- You must have \`ADMINISTRATOR\` Perms.**');
+    }
+    if(muteduser.id === message.author.id){
+        return message.channel.send(`**#- You can't mute yourself**`);
+    }
+    if(durration && !durration.match(/[1,10][s,m,h,d,w]/g)){
+        return message.channel.send('**#- Submit a right durration. \n Must be like the following submitation : 1-10 s = second , m = minute , h = hour , d = days, w = weeks**');
+    }
+    if(!muted){
+        return message.guild.createRole({name: 'Muted'});
+    }
+    if(!reason){
+       hh = null;
+    } else {
+        hh = reason;
+    }
+    if(hh === null){
+        hh = "No reason detected";
+    }
+    message.channel.send(`**${muteduser} Got muted :white_check_mark: \n Durration : ${durration}\n Reason : ${hh}**`);
+    console.log(mms(durration));
+    message.guild.channels.filter(m => m.type === 'text').forEach(f => {
+                      f.overwritePermissions(muted, {
             SEND_MESSAGES: false
         });
-        user.addRole(role);//Toxic Codes
-       
     });
-     message.channel.send(`I muted ${user}`);
-}
-});//Toxic Codes
+    message.guild.channels.filter(s => s.type === 'voice').forEach(h => {
+                      h.overwritePermissions(muted, {
+            SPEAK: false
+        });
+    });
+    muteduser.addRole(muted).then(setTimeout(() => {
+    muteduser.removeRole(muted);
+    message.channel.send(`**${muteduser} Finally got unmuted :white_check_mark:**`);
+}, mms(durration)));
  
- 
-client.on('message', message => {//Toxic Codes
-if(message.content.startsWith(prefix + 'unmute')){//Toxic Codes
-    let role = message.guild.roles.find(r => r.name === 'Muted');//Toxic Codes
-if(!user.roles.has(role)) {
-    return message.channel.send(`He is not muted`);//Toxic Codes
-}
-    user.removeRole(role).then(message.channel.send(`Unmuted ${user}`));
    
+ 
 }
-}); //Toxic Codes
+});
