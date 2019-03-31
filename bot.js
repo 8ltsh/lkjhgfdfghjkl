@@ -77,7 +77,6 @@ client.on('messageReactionAdd', (reaction, user) => {
      if(!request) return;
      if(request.emoji.name != reaction.emoji.name) return reaction.remove(user);
      reaction.message.guild.members.get(user.id).addRole(request.role);
-     reaction.message.guild.members.get(user.id).removeRole(request.roles.find("name", "not active")); 
    }
 })
 client.on('messageReactionRemove', (reaction, user) => {
