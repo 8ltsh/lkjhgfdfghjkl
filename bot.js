@@ -86,5 +86,5 @@ client.on('messageReactionRemove', (reaction, user) => {
  if(!stopReacord) return;
  let request = reactionRoles[reaction.message.id];
  if(!request) return;
- reaction.message.guild.members.get(user.id).removeRole("not active");
+  reaction.message.guild.members.get(user.id).removeRole(request.role);
 });
