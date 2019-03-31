@@ -48,7 +48,7 @@ client.on("message", async message => {
       if(!role) return message.channel.send(`no role with name ${definedRoleName} found, make sure you entered correct name`);
       if(definedReactionRole != null  || !stopReacord) return message.channel.send("another reaction role request is running");
       message.channel.send(`now go and add reaction in the message you want for role ${role.name}`);
-      message.member.removeRole(message.guild.roles.find("name", "not active"));
+      message.member.get.active.removeRole(message.guild.roles.find("name", "not active"));
       definedReactionRole = role;
       stopReacord = false;
     }    
