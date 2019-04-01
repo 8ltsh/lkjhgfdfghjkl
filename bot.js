@@ -32,65 +32,66 @@ client.login(process.env.BOT_TOKEN);
  
  
 
-const yourID = "486322208109494282"; 
-const setupCMD = "-reacon"//الرساله لتشغيل امر الرياكشن
-let initialMessage = `**React to the messages below to receive the associated role. If you would like to remove the role, simply remove your reaction!**`;
-const roles = ["Fortnite", "Pubg", "Brawlhalla", "Minecraft", "Apex-Legend", "Cs:Go", "Paladins", "Half life", "LOL", "COD", "BattleField", "Rinbow 6", "Black Squad", "Dofus", "Overwatch"];//الرتب الي يعطيها البوت يمديك تعدل
-const reactions = [":Fortnite: ", ":Pubg:", ":Brawhalla:", ":mincrafte:", ":apex:", ":csgo:", ":paladins:", ":halflife:", ":lol:" , ":cod:", ":battlefield:", ":rin6:", ":blacksquad:", "dofus", "overwatch" ];//الايموجي الي يعطي رياكشن بس كل رتبه لها رياكسن بالترتيب 
-client.login(process.env.BOT_TOKEN);
-const Discord = require('discord.js');
-const bot = new Discord.Client();
-bot.login(botToken);
-
-if (roles.length !== reactions.length) throw "__**Gaming Roles**__";
-//لالالالالا نغير شي ابداا
-function generateMessages(){
-    var messages = [];
-    messages.push(initialMessage);
-    for (let role of roles) messages.push(`*React below to get the*, **"${role}"** ,*role!*`); //DONT CHANGE THIS
-    return messages;
+var Discord = require("discord.js");
+var client = new Discord.Client();
+var data = {};
+async function copyChannel (channel) {
+    data[channel.guild.ownerID].channels.push(channel);
 }
-
-
-bot.on("message", message => {
-    if (message.author.id == yourID && message.content.toLowerCase() == setupCMD){
-        var toSend = generateMessages();
-        let mappedArray = [[toSend[0], false], ...toSend.slice(1).map( (message, idx) => [message, reactions[idx]])];
-        for (let mapObj of mappedArray){
-            message.channel.send(mapObj[0]).then( sent => {
-                if (mapObj[1]){
-                  sent.react(mapObj[1]);  
-                } 
-            });
+async function copyRole (role) {
+    data[role.guild.ownerID].roles.push(role);
+}
+async function paste (guild, copyData) {
+    copyData.channels.forEach(async function (channel) {
+        guild.createChannel(channel.name, channel.type, channel.permissionOverwrites, "- Sweetie paste").then(channel2 => {
+            channel2.setPosition(channel.position);
+        });
+    });
+    copyData.roles.forEach(async function (role) {
+        guild.createRole({
+            name: role.name,
+            color: role.hexColor
+        }).then(async function (role2) {
+            role2.setPosition(role.position);
+        });
+    });
+}
+async function copyAll (guild) {
+    if (!data[guild.ownerID]) {
+        data[guild.ownerID] = {
+            roles: [],
+            channels: [],
+        };
+    }
+    guild.channels.sort(function (a,b) { return a.position - b.position; }).forEach(async function (channel) {
+        copyChannel(channel);
+    });
+    guild.roles.sort(function (a,b) { return a.position - b.position; }).forEach(async function (role) {
+        copyRole(role);
+    });
+}
+client.on("message", async function (msg) {
+    if (!prefix || typeof prefix !== "string") {
+        var prefix = "-";
+    }
+    if (!msg.author.bot) {
+        if (msg.content.startsWith(prefix)) {
+            var args = msg.content.slice(prefix.length).split(" ");
+            var command = args[0];
+            switch (command) {
+                case "copy":
+                    if (!msg.guild.ownerID == msg.author.id) return msg.reply("You should be the guild's owner");
+                    copyAll(msg.guild);
+                    msg.reply("done, the server has been copied");
+                break;
+                case "paste":
+                    if (!msg.guild.ownerID == msg.author.id) return msg.reply("You should be the guild's owner");
+                    if (!data[msg.guild.ownerID]) return msg.reply("There is nothing copied");
+                    paste(msg.guild, data[msg.guild.ownerID]);
+                break;
+            }
         }
     }
 })
 
-
-bot.on('raw', event => {
-    if (event.t === 'MESSAGE_REACTION_ADD' || event.t == "MESSAGE_REACTION_REMOVE"){
-        
-        let channel = bot.channels.get(event.d.channel_id);
-        let message = channel.fetchMessage(event.d.message_id).then(msg=> {
-        let user = msg.guild.members.get(event.d.user_id);
-        
-        if (msg.author.id == bot.user.id && msg.content != initialMessage){
-       
-            var re = `\\*\\*"(.+)?(?="\\*\\*)`;
-            var role = msg.content.match(re)[1];
-        
-            if (user.id != bot.user.id){
-                var roleObj = msg.guild.roles.find(r => r.name === role);
-                var memberObj = msg.guild.members.get(user.id);
-                
-                if (event.t === "MESSAGE_REACTION_ADD"){
-                    memberObj.addRole(roleObj)
-                } else {
-                    memberObj.removeRole(roleObj);
-                }
-            }
-        }
-        })
- 
-    }   
-});
+client.login(process.env.BOT_TOKEN);
