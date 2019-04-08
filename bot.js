@@ -7,6 +7,13 @@ client.on('ready', () => {
     console.log('I am ready!');
 });
 
+client.on('ready', () => {
+    client.user.setActivity("HEY",{type: 'PLAYING'})
+
+});
+
+client.login(process.env.BOT_TOKEN);
+
 
 const Discord = require('discord.js');
 const Baron = new Discord.Client();
@@ -187,6 +194,4 @@ message.reply("**جارى انشاء الرومات**").then((c)=> {//Baron#1500
 setTimeout(() => {
   c.edit("**تم انشاء الرومات بنجاح**")//Baron#1500
 }, 10000);
-})
-
-client.login(process.env.BOT_TOKEN);
+});
