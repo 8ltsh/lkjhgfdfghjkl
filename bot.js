@@ -7,9 +7,5 @@ client.on('ready', () => {
     console.log('I am ready!');
 });
 
-client.on('ready', () => {
-    client.user.setActivity("HEY",{type: 'PLAYING'})
-
-});
 
 client.login(process.env.BOT_TOKEN);
