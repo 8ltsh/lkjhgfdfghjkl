@@ -15,7 +15,7 @@ client.login(process.env.BOT_TOKEN);
 
 
 
-const devs = ['294075671020568578' , '' , ''];
+const devs = ['294075671020568578' , '465175813931794443' , ''];
 
 const adminprefix = "-";
 
